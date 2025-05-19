@@ -7,5 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class MataKuliah extends Model
 {
-    use HasFactory;
+     use HasFactory;
+
+    protected $fillable = [
+        'nama',
+        'kode',
+    ];
+
+    public function jadwals()
+    {
+        return $this->hasMany(Jadwal::class);
+    }
 }
