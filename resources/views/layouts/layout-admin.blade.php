@@ -69,7 +69,7 @@
             @include('partials.admin.navbar')
 
             {{-- Main Content - Added pt-16 to create space for navbar and ml-64 for sidebar --}}
-            <main class="flex-1 overflow-y-auto p-4 pt-16 sm:ml-64">
+            <main class="flex-1 overflow-y-auto p-4 lg:p-8 pt-16 sm:ml-64">
                 @yield('content')
             </main>
         </div>
@@ -87,5 +87,6 @@
             });
         });
     </script>
+     @stack('scripts')
 </body>
 </html>
