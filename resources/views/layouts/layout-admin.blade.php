@@ -63,10 +63,10 @@
 
     <div class="content-container flex h-screen overflow-hidden">
         {{-- Sidebar --}}
-        @include('partials.mahasiswa.sidebar')
+        @include('partials.admin.sidebar')
 
         <div class="flex flex-col flex-1 w-full">
-            @include('partials.mahasiswa.navbar')
+            @include('partials.admin.navbar')
 
             {{-- Main Content - Added pt-16 to create space for navbar and ml-64 for sidebar --}}
             <main class="flex-1 overflow-y-auto p-4 pt-16 sm:ml-64">

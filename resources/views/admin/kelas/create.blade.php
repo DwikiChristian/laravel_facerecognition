@@ -1,4 +1,4 @@
-@extends('layouts.layout-dosen')
+@extends('layouts.layout-admin')
 
 @section('content')
 <div>
