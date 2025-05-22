@@ -9,7 +9,7 @@ class Mahasiswa extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['kelas_id', 'nama', 'nim', 'face_url'];
+    protected $fillable = ['kelas_id', 'nama', 'nim', 'face_url', 'user_id'];
 
     public function kelas()
     {
@@ -29,5 +29,10 @@ class Mahasiswa extends Model
     public function presensis()
     {
         return $this->hasMany(Presensi::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

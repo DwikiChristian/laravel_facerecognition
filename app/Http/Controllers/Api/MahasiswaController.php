@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Mahasiswa;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class MahasiswaController extends Controller
 {
@@ -18,22 +21,43 @@ class MahasiswaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'kelas_id' => 'required|exists:kelas,id',
-            'nama' => 'required|string|max:255',
-            'nim' => 'required|string|unique:mahasiswas,nim',
-            'face_url' => 'nullable|url',
+            'mahasiswa' => 'required|array|min:1',
+            'mahasiswa.*.nama' => 'required|string|max:255',
+            'mahasiswa.*.nim' => 'required|string|unique:mahasiswas,nim',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $mahasiswa = Mahasiswa::create($validator->validated());
+        $createdMahasiswas = [];
 
-        return response()->json([
-            'message' => 'Mahasiswa berhasil ditambahkan',
-            'data' => $mahasiswa
-        ], 201);
-    }
+        foreach ($request->mahasiswa as $mhs) {
+            $email = strtolower(Str::slug($mhs['nama'], '')) . '@gmail.com';
+
+            $user = User::create([
+                'name' => $mhs['nama'],
+                'email' => $email,
+                'password' => Hash::make($mhs['nim']),
+                'role' => 'mahasiswa',
+            ]);
+
+            $mahasiswa = Mahasiswa::create([
+                'nama' => $mhs['nama'],
+                'nim' => $mhs['nim'],
+                'kelas_id' => $request->kelas_id,
+                'user_id' => $user->id,
+            ]);
+
+            $createdMahasiswas[] = $mahasiswa;
+        }
+
+            return response()->json([
+                'message' => 'Mahasiswa berhasil ditambahkan',
+                'data' => $createdMahasiswas
+            ], 201);
+        }
+
 
     public function show($id)
     {
