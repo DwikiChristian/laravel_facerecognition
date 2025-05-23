@@ -1,14 +1,18 @@
-<?php
-
+<?php 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MataKuliah;
 use Illuminate\Database\Eloquent\Model;
 
 class Jadwal extends Model
 {
     protected $fillable = [
-        'kelas_id', 'dosen_id', 'tanggal', 'jam_mulai', 'jam_selesai',
+        'kelas_id',
+        'dosen_id',
+        'mata_kuliah_id',
+        'hari',
+        'jam_mulai',
+        'jam_selesai',
     ];
 
     public function kelas()
@@ -19,6 +23,11 @@ class Jadwal extends Model
     public function dosen()
     {
         return $this->belongsTo(User::class, 'dosen_id');
+    }
+
+    public function matkul()
+    {
+        return $this->belongsTo(MataKuliah::class);
     }
 
     public function presensis()

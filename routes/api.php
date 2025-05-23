@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\JadwalController;
 use App\Http\Controllers\Api\PresensiController;
 use App\Http\Controllers\Api\FotoWajahMahasiswaController;
 use App\Http\Controllers\Api\FaceEmbeddingController;
+use App\Http\Controllers\Api\DosenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,4 +34,5 @@ Route::apiResource('jadwal', JadwalController::class);
 Route::apiResource('presensi', PresensiController::class);
 Route::apiResource('foto-wajah-mahasiswa', FotoWajahMahasiswaController::class);
 Route::apiResource('face-embedding', FaceEmbeddingController::class);
+Route::apiResource('dosens', DosenController::class);
 
