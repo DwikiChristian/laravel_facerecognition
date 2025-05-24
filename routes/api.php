@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\PresensiController;
 use App\Http\Controllers\Api\FotoWajahMahasiswaController;
 use App\Http\Controllers\Api\FaceEmbeddingController;
 use App\Http\Controllers\Api\DosenController;
+use App\Http\Controllers\Api\MatakuliahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,4 +36,5 @@ Route::apiResource('presensi', PresensiController::class);
 Route::apiResource('foto-wajah-mahasiswa', FotoWajahMahasiswaController::class);
 Route::apiResource('face-embedding', FaceEmbeddingController::class);
 Route::apiResource('dosens', DosenController::class);
+Route::apiResource('matakuliah', MatakuliahController::class);
 
