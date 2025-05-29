@@ -10,7 +10,8 @@ class ProdiController extends Controller
 {
     public function index()
     {
-        return response()->json(Prodi::with('jurusan')->get());
+        // Load both jurusan and kelas relationships
+        return response()->json(Prodi::with(['jurusan', 'kelas'])->get());
     }
 
     public function store(Request $request)
@@ -25,12 +26,15 @@ class ProdiController extends Controller
             'nama' => $request->nama,
         ]);
 
+        // Load relationships after creation
+        $prodi->load(['jurusan', 'kelas']);
+
         return response()->json($prodi, 201);
     }
 
     public function show(Prodi $prodi)
     {
-        return response()->json($prodi->load('jurusan'));
+        return response()->json($prodi->load(['jurusan', 'kelas']));
     }
 
     public function update(Request $request, Prodi $prodi)
@@ -44,6 +48,9 @@ class ProdiController extends Controller
             'jurusan_id' => $request->jurusan_id,
             'nama' => $request->nama,
         ]);
+
+        // Load relationships after update
+        $prodi->load(['jurusan', 'kelas']);
 
         return response()->json($prodi);
     }

@@ -10,7 +10,7 @@ class JurusanController extends Controller
 {
     public function index()
     {
-        return response()->json(Jurusan::all());
+        return response()->json(Jurusan::with('prodis')->get());
     }
 
     public function store(Request $request)

@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 
-
 class KelasController extends Controller
 {
     public function index()
     {
-        return response()->json(Kelas::with('prodi')->get());
+        // Load prodi with jurusan relationship, and mahasiswa count
+        return response()->json(Kelas::with(['prodi.jurusan', 'mahasiswa'])->get());
     }
 
     public function store(Request $request)
@@ -26,12 +26,15 @@ class KelasController extends Controller
             'nama' => $request->nama,
         ]);
 
+        // Load relationships after creation
+        $kelas->load(['prodi.jurusan', 'mahasiswa']);
+
         return response()->json($kelas, 201);
     }
 
     public function show(Kelas $kelas)
     {
-        return response()->json($kelas->load('prodi'));
+        return response()->json($kelas->load(['prodi.jurusan', 'mahasiswa']));
     }
 
     public function update(Request $request, Kelas $kelas)
@@ -46,6 +49,9 @@ class KelasController extends Controller
             'nama' => $request->nama,
         ]);
 
+        // Load relationships after update
+        $kelas->load(['prodi.jurusan', 'mahasiswa']);
+
         return response()->json($kelas);
     }
 
@@ -56,4 +62,3 @@ class KelasController extends Controller
         return response()->json(null, 204);
     }
 }
-

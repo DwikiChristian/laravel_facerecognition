@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('mahasiswa', MahasiswaController::class);
 Route::apiResource('jurusans', JurusanController::class);
 Route::apiResource('prodis', ProdiController::class);
-Route::apiResource('kelas', KelasController::class);
+Route::apiResource('kelas', KelasController::class)->parameter('kelas', 'kelas');
 Route::apiResource('jadwal', JadwalController::class);
 Route::apiResource('presensi', PresensiController::class);
 Route::apiResource('foto-wajah-mahasiswa', FotoWajahMahasiswaController::class);
