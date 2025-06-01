@@ -4,9 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Mahasiswa\UploadFotoMahasiswaController;
-use App\Http\Controllers\TestCloudinaryController;
-use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Cloudinary\Uploader;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -111,12 +109,6 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/wajah', [UploadFotoMahasiswaController::class, 'index'])->name('mahasiswa.wajah');
     Route::post('/upload', [UploadFotoMahasiswaController::class, 'upload'])->name('mahasiswa.upload');
 });
-
-// Test routes
-Route::get('/test-cloudinary', [TestCloudinaryController::class, 'showUploadForm']);
-Route::get('/test-cloudinary/config', [TestCloudinaryController::class, 'testConfig']);
-Route::get('/test-cloudinary/url-upload', [TestCloudinaryController::class, 'testUrlUpload']);
-Route::post('/test-cloudinary/file-upload', [TestCloudinaryController::class, 'testFileUpload']);
 
 
 
