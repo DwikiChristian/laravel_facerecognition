@@ -23,6 +23,7 @@
     <form action="{{ route('mahasiswa.mahasiswa.upload') }}" method="POST" enctype="multipart/form-data" x-data="{ files: [] }">
         @csrf
         <input type="hidden" name="name" value="{{ Auth::user()->name }}">
+        <input type="hidden" name="mahasiswa_id" value="{{ Auth::user()->mahasiswa?->id }}">
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="foto">
                 Pilih Foto Wajah (bisa lebih dari satu)
