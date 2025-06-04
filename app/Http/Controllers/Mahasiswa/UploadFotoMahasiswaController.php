@@ -8,6 +8,7 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Models\Mahasiswa;
 use GuzzleHttp\Client;
 
 class UploadFotoMahasiswaController extends Controller
@@ -24,6 +25,7 @@ class UploadFotoMahasiswaController extends Controller
         ]);
 
         $user = Auth::user();
+        $mahasiswaId = $user->mahasiswa?->id ?? null;
         $namaMahasiswa = $user->mahasiswa?->nama ?? 'unknown';
 
         Log::info('Mulai upload wajah oleh user:', ['id' => $user->id, 'nama' => $namaMahasiswa]);
@@ -49,6 +51,11 @@ class UploadFotoMahasiswaController extends Controller
         $multipart[] = [
             'name'     => 'name',
             'contents' => $namaMahasiswa,
+        ];
+
+        $multipart[] = [
+            'name'     => 'mahasiswa_id',
+            'contents' => $mahasiswaId,
         ];
 
         try {
@@ -114,17 +121,20 @@ class UploadFotoMahasiswaController extends Controller
     }
 
     // Method untuk manual generate embedding (menggunakan background task)
+    // Method untuk manual generate embedding (menggunakan background task) - DIPERBAIKI!
     public function generateEmbedding(Request $request)
     {
         $user = Auth::user();
         $namaMahasiswa = $user->mahasiswa?->nama ?? 'unknown';
+        $mahasiswaId = $user->mahasiswa?->id ?? null; // TAMBAHKAN INI
         
-        Log::info('Manual generate embedding diminta:', ['nama' => $namaMahasiswa]);
+        Log::info('Manual generate embedding diminta:', ['nama' => $namaMahasiswa, 'id' => $mahasiswaId]);
         
         $client = new Client();
         
         try {
-            $response = $client->post("http://127.0.0.1:8000/generate-embeddings/{$namaMahasiswa}", [
+            // PERBAIKAN: Kirim mahasiswa_id sebagai path parameter
+            $response = $client->post("http://127.0.0.1:8000/generate-embeddings/{$namaMahasiswa}/{$mahasiswaId}", [
                 'timeout' => 10, // Lebih pendek karena background task
                 'connect_timeout' => 5,
             ]);
@@ -132,7 +142,7 @@ class UploadFotoMahasiswaController extends Controller
             $body = json_decode((string) $response->getBody(), true);
             Log::info('Response generate embedding:', $body);
             
-            return back()->with('success', 'Embeddings sedang di-generate ulang di background untuk ' . $namaMahasiswa);
+            return back()->with('success', 'Embeddings sedang di-generate ulang di background untuk ' . $namaMahasiswa . ' (ID: ' . $mahasiswaId . ')');
             
         } catch (\GuzzleHttp\Exception\ConnectException $e) {
             Log::error('Gagal koneksi untuk generate embedding:', [
@@ -149,6 +159,7 @@ class UploadFotoMahasiswaController extends Controller
             return back()->withErrors(['embedding' => 'Gagal generate embedding: ' . $e->getMessage()]);
         }
     }
+
 
     // Method untuk cek status embedding (opsional)
     public function checkEmbeddingStatus(Request $request)

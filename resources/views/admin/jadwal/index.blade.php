@@ -56,11 +56,11 @@
                                     <div class="text-sm text-gray-900" x-text="`${jadwal.jam_mulai} - ${jadwal.jam_selesai}`"></div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900" x-text="jadwal.matkul?.nama || 'N/A'"></div>
-                                    <div class="text-sm text-gray-500" x-text="jadwal.matkul?.kode || ''"></div>
+                                    <div class="text-sm font-medium text-gray-900" x-text="jadwal.matakuliah?.nama || 'N/A'"></div>
+                                    <div class="text-sm text-gray-500" x-text="jadwal.matakuliah?.kode || ''"></div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900" x-text="jadwal.dosen?.name || 'N/A'"></div>
+                                    <div class="text-sm font-medium text-gray-900" x-text="jadwal.dosen?.nama || 'N/A'"></div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800" x-text="jadwal.kelas?.nama || 'N/A'"></span>
@@ -125,6 +125,7 @@
                                         <template x-for="matkul in matkuls" :key="matkul.id">
                                             <option :value="matkul.id" x-text="`${matkul.kode} - ${matkul.nama}`"></option>
                                         </template>
+                                        
                                     </select>
                                 </div>
                                 <div>
@@ -179,7 +180,7 @@
                             <h3 class="text-lg leading-6 font-medium text-gray-900">Konfirmasi Hapus</h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500">
-                                    Yakin ingin menghapus jadwal "<span x-text="selectedJadwal?.matkul?.nama" class="font-medium text-gray-900"></span>"?
+                                    Yakin ingin menghapus jadwal "<span x-text="selectedJadwal?.matakuliah?.nama" class="font-medium text-gray-900"></span>"?
                                 </p>
                                 <p class="text-sm text-gray-500 mt-1">
                                     Hari <span x-text="selectedJadwal?.hari" class="font-medium text-gray-900"></span> 
@@ -228,6 +229,7 @@
                 fetch('/api/jadwal')
                     .then(res => res.json())
                     .then(data => {
+                        console.log('Jadwal data:', data); // Debug log
                         this.jadwals = data;
                         this.loading = false;
                     })
@@ -241,6 +243,7 @@
                 fetch('/api/kelas')
                     .then(res => res.json())
                     .then(data => {
+                        console.log('Kelas data:', data); // Debug log
                         this.kelass = data;
                     })
                     .catch(error => {
@@ -252,6 +255,7 @@
                 fetch('/api/dosens')
                     .then(res => res.json())
                     .then(data => {
+                        console.log('Dosen data:', data); // Debug log
                         this.dosens = data;
                     })
                     .catch(error => {
@@ -263,6 +267,7 @@
                 fetch('/api/matakuliah')
                     .then(res => res.json())
                     .then(data => {
+                        console.log('Matkul data:', data); // Debug log
                         this.matkuls = data;
                     })
                     .catch(error => {
@@ -272,10 +277,11 @@
 
             // Edit Modal Functions
             openEditModal(jadwal) {
+                console.log('Opening edit modal for:', jadwal); // Debug log
                 this.editingId = jadwal.id;
-                this.editingKelasId = jadwal.kelas_id;
-                this.editingDosenId = jadwal.dosen_id;
-                this.editingMatkulId = jadwal.mata_kuliah_id;
+                this.editingKelasId = jadwal.kelas_id.toString();
+                this.editingDosenId = jadwal.dosen_id.toString();
+                this.editingMatkulId = jadwal.mata_kuliah_id.toString();
                 this.editingHari = jadwal.hari;
                 this.editingJamMulai = jadwal.jam_mulai;
                 this.editingJamSelesai = jadwal.jam_selesai;
@@ -294,17 +300,22 @@
             },
 
             updateData() {
-                if (!this.editingKelasId) {
+                // Convert string values to integers for IDs
+                const kelasId = parseInt(this.editingKelasId);
+                const dosenId = parseInt(this.editingDosenId);
+                const matkulId = parseInt(this.editingMatkulId);
+
+                if (!kelasId) {
                     alert('Pilih kelas terlebih dahulu!');
                     return;
                 }
                 
-                if (!this.editingDosenId) {
+                if (!dosenId) {
                     alert('Pilih dosen terlebih dahulu!');
                     return;
                 }
 
-                if (!this.editingMatkulId) {
+                if (!matkulId) {
                     alert('Pilih mata kuliah terlebih dahulu!');
                     return;
                 }
@@ -324,26 +335,40 @@
                     return;
                 }
 
+                // Format time to H:i format (remove seconds if present)
+                const formatTime = (timeString) => {
+                    if (!timeString) return '';
+                    // If time includes seconds, remove them
+                    return timeString.length > 5 ? timeString.substring(0, 5) : timeString;
+                };
+
+                const updateData = {
+                    kelas_id: kelasId,
+                    dosen_id: dosenId,
+                    mata_kuliah_id: matkulId,
+                    hari: this.editingHari,
+                    jam_mulai: formatTime(this.editingJamMulai),
+                    jam_selesai: formatTime(this.editingJamSelesai)
+                };
+
+                console.log('Updating with data:', updateData); // Debug log
+
                 fetch(`/api/jadwal/${this.editingId}`, {
                     method: 'PUT',
                     headers: { 
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                     },
-                    body: JSON.stringify({ 
-                        kelas_id: this.editingKelasId,
-                        dosen_id: this.editingDosenId,
-                        mata_kuliah_id: this.editingMatkulId,
-                        hari: this.editingHari,
-                        jam_mulai: this.editingJamMulai,
-                        jam_selesai: this.editingJamSelesai
-                    }),
+                    body: JSON.stringify(updateData),
                 })
                 .then(res => {
-                    if (!res.ok) throw new Error('Network response was not ok');
+                    if (!res.ok) {
+                        return res.json().then(err => Promise.reject(err));
+                    }
                     return res.json();
                 })
                 .then(data => {
+                    console.log('Update response:', data); // Debug log
                     // Refresh data after update
                     this.fetchData();
                     this.closeEditModal();
@@ -351,7 +376,13 @@
                 })
                 .catch(error => {
                     console.error('Error updating data:', error);
-                    alert('Gagal mengupdate jadwal!');
+                    if (error.errors) {
+                        // Display validation errors
+                        const errorMessages = Object.values(error.errors).flat();
+                        alert('Gagal mengupdate jadwal:\n' + errorMessages.join('\n'));
+                    } else {
+                        alert('Gagal mengupdate jadwal!');
+                    }
                 });
             },
 

@@ -134,12 +134,35 @@
             },
 
             async submitForm() {
+                // Client-side validation for time fields
+                if (this.form.jam_mulai && this.form.jam_selesai) {
+                    const jamMulai = new Date(`2000-01-01T${this.form.jam_mulai}:00`);
+                    const jamSelesai = new Date(`2000-01-01T${this.form.jam_selesai}:00`);
+                    
+                    if (jamSelesai <= jamMulai) {
+                        alert('Jam selesai harus lebih besar dari jam mulai!');
+                        return;
+                    }
+                }
+
+                // Validate required fields
+                const requiredFields = ['kelas_id', 'dosen_id', 'mata_kuliah_id', 'hari', 'jam_mulai', 'jam_selesai'];
+                const missingFields = requiredFields.filter(field => !this.form[field]);
+                
+                if (missingFields.length > 0) {
+                    alert('Mohon lengkapi semua field yang diperlukan!');
+                    return;
+                }
+
                 try {
+                    console.log('Sending data:', this.form); // For debugging
+                    
                     const res = await fetch('/api/jadwal', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Accept': 'application/json'
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
                         },
                         body: JSON.stringify(this.form)
                     });
@@ -147,15 +170,24 @@
                     const data = await res.json();
 
                     if (!res.ok) {
-                        alert('Gagal simpan: ' + JSON.stringify(data.errors));
+                        // Handle validation errors more gracefully
+                        if (data.errors) {
+                            let errorMessage = 'Validation errors:\n';
+                            Object.keys(data.errors).forEach(field => {
+                                errorMessage += `${field}: ${data.errors[field].join(', ')}\n`;
+                            });
+                            alert(errorMessage);
+                        } else {
+                            alert('Gagal simpan: ' + (data.message || 'Unknown error'));
+                        }
                         return;
                     }
 
                     alert('Jadwal berhasil ditambahkan!');
                     window.location.href = '/admin/jadwal';
                 } catch (err) {
-                    console.error(err);
-                    alert('Terjadi kesalahan.');
+                    console.error('Error:', err);
+                    alert('Terjadi kesalahan saat menyimpan data.');
                 }
             },
 

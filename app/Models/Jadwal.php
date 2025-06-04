@@ -22,12 +22,12 @@ class Jadwal extends Model
 
     public function dosen()
     {
-        return $this->belongsTo(User::class, 'dosen_id');
+        return $this->belongsTo(Dosen::class, 'dosen_id');
     }
 
-    public function matkul()
+    public function matakuliah()
     {
-        return $this->belongsTo(MataKuliah::class);
+        return $this->belongsTo(MataKuliah::class, 'mata_kuliah_id');
     }
 
     public function presensis()

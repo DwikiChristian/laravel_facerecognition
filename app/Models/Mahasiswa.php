@@ -15,6 +15,11 @@ class Mahasiswa extends Model
     {
         return $this->belongsTo(Kelas::class);
     }
+    
+    public function jadwals()
+    {
+        return $this->hasManyThrough(Jadwal::class, Kelas::class, 'id', 'kelas_id', 'kelas_id', 'id');
+    }
 
     public function fotoWajah()
     {

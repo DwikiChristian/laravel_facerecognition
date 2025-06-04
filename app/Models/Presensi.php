@@ -15,6 +15,7 @@ class Presensi extends Model
         'waktu_presensi',
         'confidence',
         'status',
+        'bukti_screenshot',
     ];
 
     public function mahasiswa()

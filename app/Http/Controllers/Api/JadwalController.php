@@ -11,7 +11,7 @@ class JadwalController extends Controller
 {
     public function index()
     {
-        $jadwals = Jadwal::with(['kelas.prodi.jurusan', 'dosen', 'matkul'])->get();
+        $jadwals = Jadwal::with(['kelas.prodi.jurusan', 'dosen', 'matakuliah'])->get();
         return response()->json($jadwals);
     }
 
@@ -19,7 +19,7 @@ class JadwalController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'kelas_id' => 'required|exists:kelas,id',
-            'dosen_id' => 'required|exists:users,id',
+            'dosen_id' => 'required|exists:dosens,id',
             'mata_kuliah_id' => 'required|exists:mata_kuliahs,id',
             'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat',
             'jam_mulai' => 'required|date_format:H:i',
@@ -40,7 +40,7 @@ class JadwalController extends Controller
 
     public function show($id)
     {
-        $jadwal = Jadwal::with(['kelas.prodi.jurusan', 'dosen', 'matkul'])->findOrFail($id);
+        $jadwal = Jadwal::with(['kelas.prodi.jurusan', 'dosen', 'matakuliah'])->findOrFail($id);
         return response()->json($jadwal);
     }
 
@@ -50,7 +50,7 @@ class JadwalController extends Controller
 
         $validator = Validator::make($request->all(), [
             'kelas_id' => 'sometimes|required|exists:kelas,id',
-            'dosen_id' => 'sometimes|required|exists:users,id',
+            'dosen_id' => 'required|exists:dosens,id',
             'mata_kuliah_id' => 'sometimes|required|exists:mata_kuliahs,id',
             'hari' => 'sometimes|required|string|in:Senin,Selasa,Rabu,Kamis,Jumat',
             'jam_mulai' => 'sometimes|required|date_format:H:i',

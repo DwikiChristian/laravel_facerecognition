@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Dosen\PresensiDosenController;
+use App\Http\Controllers\Mahasiswa\JadwalMahasiswaController;
+use App\Http\Controllers\Dosen\JadwalDosenController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Mahasiswa\UploadFotoMahasiswaController;
+use App\Http\Controllers\Admin\PresensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,11 +77,24 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
         Route::get('/{id}/edit', fn ($id) => view('admin.kelas.edit', ['id' => $id]))->name('edit');
     });
 
-    // Presensi
-    Route::prefix('/presensi')->name('presensi.')->group(function () {
-        Route::get('/', fn () => view('admin.presensi.index'))->name('index');
-        Route::get('/create', fn () => view('admin.presensi.create'))->name('create');
-        Route::get('/{id}/edit', fn ($id) => view('admin.presensi.edit', ['id' => $id]))->name('edit');
+    // Presensi monitoring routes
+    Route::prefix('presensi')->name('presensi.')->group(function () {
+        
+        // Main monitoring page (supports AJAX requests)
+        Route::get('/', [PresensiController::class, 'index'])->name('index');
+        
+        // Statistics page/data (supports AJAX requests)
+        Route::get('/stats', [PresensiController::class, 'stats'])->name('stats');
+        
+        // Show specific presensi detail
+        Route::get('/{id}', [PresensiController::class, 'show'])->name('show');
+        
+        // Update status (manual correction by admin)
+        Route::put('/{id}/status', [PresensiController::class, 'updateStatus'])->name('updateStatus');
+        Route::patch('/{id}/status', [PresensiController::class, 'updateStatus'])->name('updateStatusPatch');
+        
+        // Get master data for filters (AJAX)
+        Route::get('/master/data', [PresensiController::class, 'getMasterData'])->name('masterData');
     });
 
     // Dosen
@@ -102,12 +119,25 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
 
 Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->group(function () {
     Route::get('/dashboard', fn () => view('dosen.dashboard'))->name('dashboard');
+    // Jadwal routes
+    Route::prefix('jadwal')->name('jadwal.')->group(function () {
+        Route::get('/', [JadwalDosenController::class, 'index'])->name('index');
+        Route::get('/today', [JadwalDosenController::class, 'today'])->name('today');
+    });
+    // Presensi routes
+    Route::prefix('presensi')->name('presensi.')->group(function () {
+        Route::get('/', [PresensiDosenController::class, 'index'])->name('index');
+        Route::get('/{jadwal}', [PresensiDosenController::class, 'getJadwal'])->name('show');
+        Route::post('/{jadwal}/start', [PresensiDosenController::class, 'startPresensi'])->name('start');
+        Route::post('/{jadwal}/stop', [PresensiDosenController::class, 'stopPresensi'])->name('stop');
+    });
 });
 
 Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasiswa.')->group(function () {
     Route::get('/dashboard', fn () => view('mahasiswa.dashboard'))->name('dashboard');
     Route::get('/wajah', [UploadFotoMahasiswaController::class, 'index'])->name('mahasiswa.wajah');
     Route::post('/upload', [UploadFotoMahasiswaController::class, 'upload'])->name('mahasiswa.upload');
+    Route::get('/jadwal', [JadwalMahasiswaController::class, 'index'])->name('mahasiswa.jadwal');
 });
 
 
