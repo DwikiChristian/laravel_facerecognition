@@ -7,7 +7,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Mahasiswa\UploadFotoMahasiswaController;
+use App\Http\Controllers\Mahasiswa\PresensiMahasiswaController;
 use App\Http\Controllers\Admin\PresensiController;
+use App\Models\Presensi;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +132,7 @@ Route::middleware(['auth', 'role:dosen'])->prefix('dosen')->name('dosen.')->grou
         Route::get('/{jadwal}', [PresensiDosenController::class, 'getJadwal'])->name('show');
         Route::post('/{jadwal}/start', [PresensiDosenController::class, 'startPresensi'])->name('start');
         Route::post('/{jadwal}/stop', [PresensiDosenController::class, 'stopPresensi'])->name('stop');
+        Route::get('/table/{jadwal}', [PresensiDosenController::class, 'getTablePresensi'])->name('table');
     });
 });
 
@@ -138,6 +141,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/wajah', [UploadFotoMahasiswaController::class, 'index'])->name('mahasiswa.wajah');
     Route::post('/upload', [UploadFotoMahasiswaController::class, 'upload'])->name('mahasiswa.upload');
     Route::get('/jadwal', [JadwalMahasiswaController::class, 'index'])->name('mahasiswa.jadwal');
+    Route::get('/presensi', [PresensiMahasiswaController::class, 'index'])->name('mahasiswa.presensi');
 });
 
 

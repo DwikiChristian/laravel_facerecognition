@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dosen Dashboard</title>
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Critical inline styles to prevent layout shifts -->
     <style>
         /* Preloader to hide content until fully loaded */

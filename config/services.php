@@ -31,4 +31,7 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'face_recognition' => [
+        'url' => env('FACE_RECOGNITION_URL', 'http://127.0.0.1:8000'),
+    ],
 ];

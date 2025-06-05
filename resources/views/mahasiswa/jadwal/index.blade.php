@@ -101,16 +101,33 @@
                 @endphp
 
                 <div class="group relative">
-                    <!-- Today indicator -->
-                    @if($isToday)
-                        <div class="absolute -top-2 -right-2 z-10">
-                            <div class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
-                                HARI INI
-                            </div>
-                        </div>
-                    @endif
+                    <!-- Status Badge - Tampilkan untuk semua jadwal -->
+                    {{-- <div class="absolute top-0 right-0 z-10">
+                        @if($item->status === 'SEDANG BERLANGSUNG')
+                            <span class="bg-white/90 backdrop-blur-sm text-green-700 px-3 py-1 rounded-full text-xs font-semibold border border-green-200">
+                                🟢 AKTIF
+                            </span>
+                        @elseif($item->status === 'SELESAI')
+                            <span class="bg-gray-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                ⚫ SELESAI
+                            </span>
+                        @elseif($item->status === 'LEWAT')
+                            <span class="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                🔴 LEWAT
+                            </span>
+                        @elseif($item->status === 'AKAN DIMULAI')
+                            <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold animate-bounce shadow-lg">
+                                🔵 SEGERA
+                            </span>
+                        @elseif($item->status === 'AKAN DATANG')
+                            <span class="bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                🟡 MENDATANG
+                            </span>
+                        @endif
+                    </div> --}}
 
-                    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl {{ $isToday ? 'ring-2 ring-red-300' : '' }}">
+                    <!-- Today indicator ring -->
+                    <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-2xl {{ $isToday ? 'ring-4 ring-blue-300 ring-opacity-50' : '' }}">
                         <!-- Header with gradient -->
                         <div class="bg-gradient-to-r {{ $gradientClass }} p-6 text-white relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-32 h-32 bg-white bg-opacity-10 rounded-full -translate-y-16 translate-x-16"></div>
@@ -174,12 +191,35 @@
                                     </span>
                                 </div>
                                 
-                                @if($isToday)
-                                    <div class="flex items-center space-x-1 text-red-600">
-                                        <div class="w-2 h-2 bg-red-600 rounded-full animate-ping"></div>
-                                        <span class="text-xs font-bold">AKTIF</span>
-                                    </div>
-                                @endif
+                                <!-- Status Text with Animated Dots - Tampilkan untuk semua jadwal -->
+                                <div class="flex items-center space-x-1">
+                                    @if($item->status === 'SEDANG BERLANGSUNG')
+                                        <div class="flex items-center space-x-1 text-green-600">
+                                            <div class="w-2 h-2 bg-green-600 rounded-full animate-ping"></div>
+                                            <span class="text-xs font-bold">{{ $item->status }}</span>
+                                        </div>
+                                    @elseif($item->status === 'SELESAI')
+                                        <div class="flex items-center space-x-1 text-gray-600">
+                                            <div class="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                            <span class="text-xs font-medium">{{ $item->status }}</span>
+                                        </div>
+                                    @elseif($item->status === 'LEWAT')
+                                        <div class="flex items-center space-x-1 text-red-600">
+                                            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                                            <span class="text-xs font-medium">{{ $item->status }}</span>
+                                        </div>
+                                    @elseif($item->status === 'AKAN DIMULAI')
+                                        <div class="flex items-center space-x-1 text-blue-600">
+                                            <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                                            <span class="text-xs font-bold">{{ $item->status }}</span>
+                                        </div>
+                                    @elseif($item->status === 'AKAN DATANG')
+                                        <div class="flex items-center space-x-1 text-yellow-600">
+                                            <div class="w-2 h-2 bg-yellow-600 rounded-full animate-pulse"></div>
+                                            <span class="text-xs font-medium">{{ $item->status }}</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\FaceEmbeddingController;
 use App\Http\Controllers\Api\DosenController;
 use App\Http\Controllers\Api\MatakuliahController;
 use App\Http\Controllers\Api\PresensiDosenController;
+use App\Http\Controllers\Api\ReceivePresensiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,5 +56,9 @@ Route::prefix('presensi')->name('presensi.')->group(function () {
     // PUT/PATCH /api/presensi/{id}/status - update status (koreksi manual admin)
     Route::put('/{id}/status', [PresensiController::class, 'updateStatus'])->name('updateStatus');
     Route::patch('/{id}/status', [PresensiController::class, 'updateStatus'])->name('updateStatusPatch');
+
+    
+    
 });
 
+Route::post('/presensi/receive', [ReceivePresensiController::class, 'receivePresensiData']);
