@@ -107,7 +107,7 @@
             kelasList: [],
             dosenList: [],
             matkulList: [],
-            hariList: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'],
+            hariList: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'],
 
             get filteredProdiList() {
                 return this.prodiList.filter(p => p.jurusan_id == this.selectedJurusanId);

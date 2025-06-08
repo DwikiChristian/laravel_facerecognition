@@ -21,7 +21,7 @@ class JadwalController extends Controller
             'kelas_id' => 'required|exists:kelas,id',
             'dosen_id' => 'required|exists:dosens,id',
             'mata_kuliah_id' => 'required|exists:mata_kuliahs,id',
-            'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat',
+            'hari' => 'required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'jam_mulai' => 'required|date_format:H:i',
             'jam_selesai' => 'required|date_format:H:i|after:jam_mulai',
         ]);
@@ -52,7 +52,7 @@ class JadwalController extends Controller
             'kelas_id' => 'sometimes|required|exists:kelas,id',
             'dosen_id' => 'required|exists:dosens,id',
             'mata_kuliah_id' => 'sometimes|required|exists:mata_kuliahs,id',
-            'hari' => 'sometimes|required|string|in:Senin,Selasa,Rabu,Kamis,Jumat',
+            'hari' => 'sometimes|required|string|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu,Minggu',
             'jam_mulai' => 'sometimes|required|date_format:H:i',
             'jam_selesai' => 'sometimes|required|date_format:H:i|after:jam_mulai',
         ]);
